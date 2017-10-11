@@ -1,39 +1,35 @@
 #include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 __global__ void test(double *a, double *b, double *x, double *y, double *energy, int N, int size){
-	//__shared__ double X[40000];
-	//__shared__ double Y[40000];
-	int tid = blockIdx.x*blockDim.x + threadIdx.x;
-	//if(tid < N){
-	//	X[tid] = x[tid];
-	//	Y[tid] = y[tid];
-	//}
-	//if(tid < size){
-	//	E[tid] = energy[tid];
-	//}
-	if(tid < N){
-		a[tid] += 4;
-		b[tid] += 3;
+
+	int i = blockIdx.x*blockDim.x + threadIdx.x;
+
+	if(i < N){
+		a[i] += 1;
+
+		b[i] += 0;
+
 	}
 	__syncthreads();
 
-	if(tid < N){
-		for(int i = 0; i < N; i++){
-			if(a[tid] == x[i] && b[tid] == y[i]){
-				for(int k = 0; k < size; k+=400){
-					energy[tid] += energy[i+k];
-				}
+	for(int j = 0; j< N; j++){
+		if(a[i] == x[j] && b[i] == y[j]){
+			for(int k = 0; k+j <= 100; k+=10){
+				energy[i+k] += energy[j];
 			}
 		}
-	}
+	}	
 }
 
 
 int main(){
-	int size = 40000;
-	int size2 = 16000000;
-	int GridDim= (size + 127)/(128);
-	int BlockSize = 128;
+	int size = 10;
+	int size2 = 100;
+	int GridDim= 1;
+	int BlockSize = 10;
 
 	double *e;
 	e = (double*)malloc(size2 * sizeof(double));
@@ -46,33 +42,52 @@ int main(){
 	x = (double*)malloc(size*sizeof(double));
 	y = (double*)malloc(size*sizeof(double));
 
-	for(int i = 0; i < 200; i++){
-		for(int j= 0; j < 200; j++){
-			x[j] = j;
-			y[j] = j;
-		}
+
+	for(int j= 0; j < 10; j++){
+		x[j] = j;
+		y[j] = 0;
 	}
 
-	double *a, *b, *nrg;
+
+	for(int w = 0; w < 10; w++){
+		std::cout << x[w] << "  "<< y[w] << std::endl;
+	}
+
+	//memcpy(x1,x,size*sizeof(int));
+	//memcpy(y1,y,size*sizeof(int));
+
+	double *a, *b, *c, *d, *nrg;
 	cudaMalloc((void**)&a, size*sizeof(double));
 	cudaMalloc((void**)&b, size*sizeof(double));
 	cudaMalloc((void**)&nrg, size2*sizeof(double));
+	cudaMalloc((void**)&c, size*sizeof(double));
+	cudaMalloc((void**)&d, size*sizeof(double));
 
-	cudaMemcpy(a, x, size*sizeof(double), cudaMemcpyHostToDevice);
-	cudaMemcpy(b, y, size*sizeof(double), cudaMemcpyHostToDevice);
-	cudaMemcpy(nrg, e, size2*sizeof(double), cudaMemcpyHostToDevice);
+	cudaError_t err = cudaMemcpy(a, x, size*sizeof(double), cudaMemcpyHostToDevice);
+	printf("CUDA malloc a: %s\n",cudaGetErrorString(err));
 
-	test<<<GridDim, BlockSize>>>(a,b,a,b,nrg,size,size2);
+	err= cudaMemcpy(b, y, size*sizeof(double), cudaMemcpyHostToDevice);
+	printf("CUDA malloc y: %s\n",cudaGetErrorString(err));
+	
+	err= cudaMemcpy(c, x, size*sizeof(double), cudaMemcpyHostToDevice);
+	printf("CUDA malloc y: %s\n",cudaGetErrorString(err));
+	
+	err= cudaMemcpy(d, y, size*sizeof(double), cudaMemcpyHostToDevice);
+	printf("CUDA malloc y: %s\n",cudaGetErrorString(err));
+
+	err = cudaMemcpy(nrg, e, size2*sizeof(double), cudaMemcpyHostToDevice);
+	printf("CUDA malloc energy: %s\n",cudaGetErrorString(err));
+
+
+	test<<<GridDim, BlockSize>>>(a,b,c,d,nrg,size,size2);
 
 	double *final;
 	final = (double*)malloc(size2*sizeof(double));
-	cudaMemcpy(final,nrg, size2*sizeof(double),cudaMemcpyDeviceToHost);
+	err = cudaMemcpy(final,nrg, size2*sizeof(double),cudaMemcpyDeviceToHost);
+	printf("CUDA malloc final: %s\n",cudaGetErrorString(err));
+
 	std::cout << "done" << std::endl;
-	int count = 0;
-	for(int y = 0; y< size2; y++){
-			if(final[y] != e[y]){
-				count++;
-			}
+	for(int i = 0; i< 100; i++){
+		std::cout << final[i] << "  " << e[i] << std::endl;
 	}
-		std::cout << count << std::endl;
 }
