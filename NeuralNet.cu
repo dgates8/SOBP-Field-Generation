@@ -14,7 +14,9 @@
 
 #define mag 10000
 #define BLOCKSIZE 128
-#define eta .001
+
+//tune to get higher pass rate, currently tuned to ~ 90% which is good enough for my application
+#define eta .00031
 
 //macro for error checking
 #define cudaCheckError(){	   												  \
@@ -138,10 +140,10 @@ int main(){
 	srand(time(NULL));
 	//initialize training data
 	for(int i = 0; i < mag; i++){
-		w[i] = static_cast <float> (rand()) / static_cast <float> (RAND_MAX/2);	
+		w[i] = static_cast <float> (rand()) / static_cast <float> (RAND_MAX/4);	
 		b[i] = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);	
 		for(int j = 0; j < mag; j++){
-			z[i] = 2*x[i] + exp(-x[i]);
+			z[i] = 4*x[i] + exp(-x[i]) + sin(x[i])-cos(x[i])*cos(x[i]);
 		}
 	}
  
@@ -204,7 +206,7 @@ int main(){
 		}
 		
 		for(int i = 0; i < mag; i++){
-			if(w[i] > 100 || b[i] > 100){
+			if(w[i] > 5 || b[i] > 5 || w[i] < -5 || b[i] < -5){
 				w[i] = 0;
 				b[i] = 0;
 			}
@@ -224,7 +226,7 @@ int main(){
 			std::cout << count << std::endl;
 		}
 
-		if(count > 6000){
+		if(count > 9200){
 			FLAG = false;
 		}
 
