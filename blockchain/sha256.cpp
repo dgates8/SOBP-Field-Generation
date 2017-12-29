@@ -130,3 +130,10 @@ std::string sha256(std::string input)
         sprintf(buf+i*2, "%02x", digest[i]);
     return std::string(buf);
 }
+
+bool validate(std::string data, const char* hash, const int nonce){
+	std::string toValidate = data + std::to_string(nonce);
+	std::string str(hash);
+	return (sha256(toValidate).compare(hash));
+		
+}
