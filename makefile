@@ -10,3 +10,4 @@ write: writeDepthDose.cu
 	$(CC) -o write writeDepthDose.cu $(CFLAGS)
 sum: sumSOBP.cu
 	$(CC) -o sum sumFieldsForSOBP.cu $(CFLAGS)
+endif
