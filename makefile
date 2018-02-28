@@ -8,6 +8,6 @@ generate: generateBeams.cu
 	$(CC) -o generate generateBeams.cu $(CFLAGS)
 write: writeDepthDose.cu
 	$(CC) -o write writeDepthDose.cu $(CFLAGS)
-sum: sumFieldsForSoBP.cu
+sum: sumFieldsForSOBP.cu
 	$(CC) -o sum sumFieldsForSOBP.cu $(CFLAGS)
 endif
