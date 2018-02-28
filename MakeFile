@@ -2,9 +2,11 @@ NVCC_CHECK=$(shell which nvcc)
 NVCC_TEST=$(notdir $(NVCC_CHECK))
 ifeq ($(NVCC_TEST),nvcc)
 CC=nvcc	
-CFLAGS=-g -std=c++11 -I. 
-all: generate write 
-mine: miner.cu block.cpp sha256.cpp coin.cpp wallet.cpp 
-	$(CC) -o mine miner.cu block.cpp sha256.cpp coin.cpp wallet.cpp $(CFLAGS)
-trickcoin: trickcoin.cpp block.cpp sha256.cpp coin.cpp wallet.cpp
-	$(CC) -o trickcoin trickcoin.cpp block.cpp sha256.cpp coin.cpp wallet.cpp $(CFLAGS)
+CFLAGS=-g -std=c++11 -03 -arch=sm_37
+all: generate write sum
+generate: generate.cu
+	$(CC) -o generate generate.cu $(CFLAGS)
+write: writeDepthDose.cu
+	$(CC) -o write write.cu $(CFLAGS)
+sum: sumSOBP.cu
+	$(CC) -o sum sumSOBP.cu $(CFLAGS)
