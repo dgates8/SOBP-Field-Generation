@@ -7,6 +7,6 @@ all: generate write sum
 generate: generate.cu
 	$(CC) -o generate generate.cu $(CFLAGS)
 write: writeDepthDose.cu
-	$(CC) -o write write.cu $(CFLAGS)
+	$(CC) -o write writeDepthDose.cu $(CFLAGS)
 sum: sumSOBP.cu
-	$(CC) -o sum sumSOBP.cu $(CFLAGS)
+	$(CC) -o sum sumFieldsForSOBP.cu $(CFLAGS)
