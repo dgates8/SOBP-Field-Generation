@@ -1,0 +1,19 @@
+#! /bin/bash
+taskset -c 0,1,2 ./generate 1  9  2 &
+taskset -c 3,4,5 ./generate 10 18  3 &
+taskset -c 6,7,8 ./generate 19 27  3 &
+taskset -c 9,10,11 ./generate 28 33  4 &
+taskset -c 12,13,14 ./generate 34 41  6 & 
+taskset -c 15,16,17 ./generate 42 48  7 & 
+taskset -c 18,19,20 ./generate 49 55  8 &
+taskset -c 21,22,23 ./generate 56 62  9 &
+taskset -c 24,25,26 ./generate 63 68 10 &
+taskset -c 27,28,29 ./generate 69 74 11 &
+taskset -c 30,31,32 ./generate 75 80 12 &
+taskset -c 33,34,35 ./generate 81 84 13 &
+taskset -c 36,37,38 ./generate 85 88 14 &
+taskset -c 39,40,41 ./generate 89 91 15 &
+taskset -c 42,43,44 ./generate 92 94 16 & 
+wait
+echo Runs complete 
+
