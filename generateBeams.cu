@@ -49,8 +49,7 @@ __global__ void beamShift(double* energy, double *temp, int move_x, int move_y, 
 }
 /***********************************************************************************
 Sum takes in each array after the move and sums them back together to get the correct 
-energy values for the field. I used a tiling approach whereby the energy data is 
-loaded into shared memory tiles for faster read/write access and then added together.
+energy values for the field. This function exploits a thread level parallelism of 32
 ************************************************************************************/
 __global__ void sum(double* temp, double* energy, const int size){
 	int tid = blockIdx.x*blockDim.x*32 + threadIdx.x;
