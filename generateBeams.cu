@@ -30,10 +30,10 @@ __inline__ __device__ int absolute(int value){
 
 /***********************************************************************************
 BeamShift takes in energy array from the host loop and moves the coordinates 
-as specified to move the beam grid, given by the starting value 200*y + x, which 
+as specified to move the beam grid, given by the starting value 400*y + x, which 
 corresponds to the beginning of the offset to write the energy value into 
 corresponding to the "move". Alternatively, think of the "move" in x-y direction as
-having to be mapped back into a location in the 16M element energy array, since the 
+having to be mapped back into a location in the 64M element energy array, since the 
 energy array contains all information about how the field is distributed and paraview
 does the coordinate assignation.  
 ************************************************************************************/
