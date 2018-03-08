@@ -1,8 +1,8 @@
 #! /bin/bash
-taskset -c 0,1,2 ./generate 1  9  2 &
-taskset -c 3,4,5 ./generate 10 18  3 &
-taskset -c 6,7,8 ./generate 19 27  3 &
-taskset -c 9,10,11 ./generate 28 33  4 &
+taskset -c 0,1,2     ./generate 1  9  2 &
+taskset -c 3,4,5    ./generate 10 18  3 &
+taskset -c 6,7,8    ./generate 19 27  4 &
+taskset -c 9,10,11  ./generate 28 33  5 &
 taskset -c 12,13,14 ./generate 34 41  6 & 
 taskset -c 15,16,17 ./generate 42 48  7 & 
 taskset -c 18,19,20 ./generate 49 55  8 &
